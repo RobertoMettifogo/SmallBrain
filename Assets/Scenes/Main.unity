@@ -2951,7 +2951,7 @@ MonoBehaviour:
   CameraOffset: 2
   uiController: {fileID: 2103969097}
   String: some Value
-  difficulty: 4
+  difficulty: 1
   percentageAdd: 0.8
   percentageSub: 0.5
   percentageMulti: 0.3
