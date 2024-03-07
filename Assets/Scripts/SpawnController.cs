@@ -10,6 +10,7 @@ public class SpawnController : MonoBehaviour
     public float CameraOffset = 2;
     public UIController uiController;
     public string String = "some Value";
+    private Coroutine _Spawning;
     private List<GameObject> spawnedObjects = new List<GameObject>();
     [SerializeField]
     public int spawnedObjectCount { get; private set; }
@@ -28,28 +29,26 @@ public class SpawnController : MonoBehaviour
 
     void Start()
     {
-        StartSpawning(difficulty);
         opDictionary.Add(MathOperation.Addition, new AdditionOperation());
         opDictionary.Add(MathOperation.Subtraction, new SubtractionOperation());
         opDictionary.Add(MathOperation.Multiplication, new MultiplicationOperation());
         opDictionary.Add(MathOperation.Division, new DivisionOperation());
+        StartSpawning();
     }
 
     private IOperation RandomOperationSpawnChance()
     {
         MathOperation chosenOperation = MathOperation.Addition;
 
-        float randomValue = Random.value;
-
         if (Random.value <= percentageAdd) //%80 percent chance
         {
             chosenOperation = MathOperation.Addition;
         }
-        if (Random.value <= percentageSub) //%50 percent chance
+        else if (Random.value <= percentageSub) //%50 percent chance
         {
             chosenOperation = MathOperation.Subtraction;
         }
-        if (Random.value <= percentageMulti) //%30 percent chance 
+        else if (Random.value <= percentageMulti) //%30 percent chance 
         {
             chosenOperation = MathOperation.Multiplication;
         }
@@ -60,17 +59,31 @@ public class SpawnController : MonoBehaviour
             return opDictionary[chosenOperation];
     }
 
-    void StartSpawning(float interval)
+    private IEnumerator Spawning()
     {
-        float spawnrate = 5f - difficulty;
-        interval = spawnrate;
-        //We call the SpawnObject methos for the period of interval
-        InvokeRepeating("SpawnObject", 0, interval);
+        while (true)
+        {
+            WaitForSeconds wait = new WaitForSeconds(5f - difficulty);
+            SpawnObject();
+            yield return wait;
+        }
     }
 
-    void StopSpawning()
+    public void StartSpawning()
     {
-        CancelInvoke("SpawnObject");
+        if (_Spawning == null)
+        {
+            _Spawning = StartCoroutine(Spawning());
+        }
+    }
+
+    public void StopSpawning()
+    {
+        if (_Spawning != null)
+        {
+            StopCoroutine(_Spawning);
+            _Spawning = null;
+        }
     }
 
     // We have our enum of possible operation, we can easly add or remove
@@ -166,6 +179,20 @@ public class SpawnController : MonoBehaviour
     {
         difficulty++;
         StopSpawning();
-        StartSpawning(difficulty);
+        StartSpawning();
+    }
+
+    //EX INVOKE METHOD LESS EFFICENT THAN COROUTINES
+    void StartSpawningInvoke(float interval)
+    {
+        float spawnrate = 5f - difficulty;
+        interval = spawnrate;
+        //We call the SpawnObject methos for the period of interval
+        InvokeRepeating("SpawnObject", 0, interval);
+    }
+
+    void StopSpawningInvoke()
+    {
+        CancelInvoke("SpawnObject");
     }
 }

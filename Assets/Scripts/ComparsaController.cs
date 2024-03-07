@@ -8,12 +8,15 @@ public class ComparsaController : MonoBehaviour
     private Animator animator;
     private Vector3 startPosition;
     public Transform endPosition;
+    private AudioSource comparsaMeow;
+    public AudioSource comparsaWalk;
     private float journeyLength;
     private float speed = 3f;
 
     private void Start()
     {
         animator = GetComponent<Animator>();
+        comparsaMeow = GetComponent<AudioSource>();
         animator.SetBool("Run", false);
         startPosition = transform.position;
         journeyLength = Vector3.Distance(startPosition, endPosition.position);
@@ -29,6 +32,7 @@ public class ComparsaController : MonoBehaviour
         float startTime = Time.time;
         float distanceCovered = 0f;
         animator.SetBool("Run", true);
+        comparsaWalk.Play();
 
         while (distanceCovered < journeyLength)
         {
@@ -43,7 +47,10 @@ public class ComparsaController : MonoBehaviour
         transform.position = endPosition.position;
 
         animator.SetBool("Run", false);
+        comparsaWalk.Stop();
         animator.SetBool("Miao", true);
+        comparsaMeow.Play();
+        comparsaMeow.mute = false;
 
         StartCoroutine(Miao());
     }
@@ -52,6 +59,7 @@ public class ComparsaController : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
         animator.SetBool("Miao", false);
+        comparsaMeow.mute = false;
         animator.SetBool("Sit", true);
     }
 

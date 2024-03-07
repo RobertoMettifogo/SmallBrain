@@ -12,6 +12,7 @@ public class GameController : MonoBehaviour
     public Text livesText;
     public Text scoreText;
     public Text lastScore;
+    public AudioSource Purr;
     public SpawnController spawnController;
     public InputField inputField;
     public Rock rock;
@@ -23,6 +24,7 @@ public class GameController : MonoBehaviour
     private bool hasReached5000 = false;
     private bool isPaused = true;
     Skybox sky;
+    public string externalLinkURL = "https://discord.gg/z6gMV253";
 
     public enum Animations
     {
@@ -56,7 +58,6 @@ public class GameController : MonoBehaviour
             PlayAnimation(randomAnimation);
         }
     }
-
     void PlayAnimation(Animations animation)
     {
         animator.SetBool("Stretch", false);
@@ -66,6 +67,7 @@ public class GameController : MonoBehaviour
         {
             case Animations.Stretch:
                 animator.SetBool("Stretch", true);
+                Purr.Play();
                 break;
             case Animations.Lick:
                 animator.SetBool("Lick", true);
@@ -83,6 +85,7 @@ public class GameController : MonoBehaviour
         {
             case Animations.Stretch:
                 animator.SetBool("Stretch", false);
+                Purr.Stop();
                 break;
             case Animations.Lick:
                 animator.SetBool("Lick", false);
@@ -90,6 +93,12 @@ public class GameController : MonoBehaviour
         }
     }
 
+    // Function to open the external link
+    public void OpenExternalLink()
+    {
+        // Open the URL
+        Application.OpenURL(externalLinkURL);
+    }
     //Simple button interaction
     public void OnButtonClick()
     {
@@ -225,9 +234,9 @@ public class GameController : MonoBehaviour
     void PauseGame()
     {
         comparsa.Reset();
+        UpdateLastScore();
         Time.timeScale = 0f;
         isPaused = true;
-        UpdateLastScore();
         StartMenu.SetActive(true);
         answer.SetActive(false);
         DestroyAllRocks();
