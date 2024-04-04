@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour
     public InputField inputField;
     public Rock rock;
     public GameObject StartMenu;
+    public GameObject PauseMenu;
     public GameObject answer;
     private Animator animator;
     public ComparsaController comparsa;
@@ -36,7 +37,7 @@ public class GameController : MonoBehaviour
     {
         hasReached1000 = false;
         hasReached5000 = false;
-        PauseGame();
+        ResetGame();
         UpdateLives();
         UpdateScore();
         UpdateLastScore();
@@ -111,6 +112,20 @@ public class GameController : MonoBehaviour
         Application.Quit();
     }
 
+    public void OnButtonClickPause()
+    {
+        PauseGame();
+    }
+
+    public void OnButtonClickExit()
+    {
+        ResetGame();
+    }
+
+    public void OnButtonClickResume()
+    {
+        ResumeGame();
+    }
 
     private void Update()
     {
@@ -131,7 +146,7 @@ public class GameController : MonoBehaviour
 
         if (lives == 0)
         {
-            PauseGame();
+            ResetGame();
         }
 
         int count = spawnController.spawnedObjectCount;
@@ -231,15 +246,29 @@ public class GameController : MonoBehaviour
     }
 
     //Set game to pause status
-    void PauseGame()
+    void ResetGame()
     {
         comparsa.Reset();
         UpdateLastScore();
         Time.timeScale = 0f;
         isPaused = true;
         StartMenu.SetActive(true);
+        PauseMenu.SetActive(false);
         answer.SetActive(false);
         DestroyAllRocks();
+    }
+
+    void PauseGame()
+    {
+        Time.timeScale = 0f;
+        PauseMenu.SetActive(true);
+        StartMenu.SetActive(false);
+    }
+
+    void ResumeGame()
+    {
+        Time.timeScale = 1f;
+        PauseMenu.SetActive(false);
     }
 
     //Set the game to unpause status
@@ -253,6 +282,7 @@ public class GameController : MonoBehaviour
         isPaused = false;
         answer.SetActive(true);
         StartMenu.SetActive(false);
+        PauseMenu.SetActive(false);
         inputField.Select();
         inputField.ActivateInputField();
 
