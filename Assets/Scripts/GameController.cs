@@ -13,11 +13,13 @@ public class GameController : MonoBehaviour
     public Text scoreText;
     public Text lastScore;
     public AudioSource Purr;
+    public AudioSource Pop;
     public SpawnController spawnController;
     public InputField inputField;
     public Rock rock;
     public GameObject StartMenu;
     public GameObject PauseMenu;
+    public GameObject TutorialMenu;
     public GameObject answer;
     private Animator animator;
     public ComparsaController comparsa;
@@ -99,11 +101,13 @@ public class GameController : MonoBehaviour
     {
         // Open the URL
         Application.OpenURL(externalLinkURL);
+        Pop.Play();
     }
     //Simple button interaction
     public void OnButtonClick()
     {
         UnpauseGame();
+        Pop.Play();
     }
 
     //Simple button interaction
@@ -115,16 +119,25 @@ public class GameController : MonoBehaviour
     public void OnButtonClickPause()
     {
         PauseGame();
+        Pop.Play();
     }
 
     public void OnButtonClickExit()
     {
         ResetGame();
+        Pop.Play();
     }
 
     public void OnButtonClickResume()
     {
         ResumeGame();
+        Pop.Play();
+    }
+
+    public void OnButtonClikTutorial()
+    {
+        Tutorial();
+        Pop.Play();
     }
 
     private void Update()
@@ -287,6 +300,11 @@ public class GameController : MonoBehaviour
         inputField.ActivateInputField();
 
         Debug.ClearDeveloperConsole();
+    }
+    //spawn tutorial menu
+    void Tutorial()
+    {
+        TutorialMenu.SetActive(true);
     }
 
     //Clear the board!
